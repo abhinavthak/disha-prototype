@@ -57,6 +57,17 @@ export default function LivePanel({ stage = 'exploring', accepted, onAccept, onA
               <span style={{ fontSize: 12, lineHeight: 1.45, color: 'var(--muted)' }}>Your profile and the full reasoning for all five options. You can keep asking Disha first.</span>
             </div>
           )}
+          {!accepted && onAccept && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <button type="button" onClick={onAccept} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 52, borderRadius: 12, border: 'none', background: 'var(--accent)', color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer' }}>
+                That feels right
+              </button>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button type="button" disabled title="Not part of this prototype" style={{ flexGrow: 1, height: 42, borderRadius: 10, border: '1px solid var(--border)', background: 'transparent', color: 'var(--muted)', fontSize: 12, fontWeight: 700, opacity: 0.6, cursor: 'not-allowed' }}>Not quite</button>
+                <button type="button" disabled title="Not part of this prototype" style={{ flexGrow: 1, height: 42, borderRadius: 10, border: '1px solid var(--border)', background: 'transparent', color: 'var(--muted)', fontSize: 12, fontWeight: 700, opacity: 0.6, cursor: 'not-allowed' }}>Still not right</button>
+              </div>
+            </div>
+          )}
         </article>
       )}
 

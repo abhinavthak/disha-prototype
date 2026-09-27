@@ -6,6 +6,7 @@ import {
   REVEAL_LINES, AFTER_ACCEPT, USER_ACCEPT_LINE, PANEL_STAGES, PICKS,
 } from '../data/script.js';
 import { AUDIO } from '../data/audio.js';
+import useIsDesktop from '../hooks/useIsDesktop.js';
 
 let uid = 0;
 const nextId = () => `m${uid++}`;
@@ -28,21 +29,22 @@ export default function ConversationScreen({ onEnd, onFinish }) {
   const [elapsed, setElapsed] = useState(0);
   const timers = useRef([]);
   const endRef = useRef(null);
+  // Created once lazily at render time (not in an effect) so React StrictMode's
+  // dev-only double-invoke of mount effects can't spawn a second Audio instance
+  // and have its cleanup pause() interrupt the real one's playback.
   const audioRef = useRef(null);
+  if (!audioRef.current) audioRef.current = new Audio();
 
   useEffect(() => {
     const iv = setInterval(() => setElapsed((e) => e + 1), 1000);
     return () => clearInterval(iv);
   }, []);
 
-  useEffect(() => {
-    audioRef.current = new Audio();
-    return () => audioRef.current?.pause();
-  }, []);
+  useEffect(() => () => audioRef.current?.pause(), []);
 
   // Plays Disha's pre-generated line (Sarvam TTS, voice "ritu") for a script id.
   function speak(id) {
-    const src = id && AUDIO[id];
+    const src = id && AUDIO[id]?.url;
     const el = audioRef.current;
     if (!src || !el) return;
     el.pause();
@@ -128,6 +130,125 @@ export default function ConversationScreen({ onEnd, onFinish }) {
   const accepted = stage === 'recommended';
   const orbMode = typing ? 'connecting' : stage === 'thinking' ? 'connecting' : chips.length || stage === 'opening' ? 'speaking' : 'listening';
   const topMatch = PANEL_STAGES.exploring.matches[0];
+  const isDesktop = useIsDesktop();
+
+  if (isDesktop) {
+    const listening = !muted && stage !== 'thinking' && stage !== 'opening' && chips.length === 0;
+    return (
+      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', flexGrow: 1, background: 'var(--bg)', overflow: 'hidden' }} className="screen-transition">
+        <header style={{ height: 68, boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', borderBottom: '1px solid var(--border-2)' }}>
+          <div style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text-strong)' }}>YourDegree</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', borderRadius: 999, background: 'var(--card)', color: '#C7C9CE', fontSize: 13, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent)' }} />
+              <span>Recording · {fmtTime(elapsed)}</span>
+            </span>
+            {!accepted && (
+              <button type="button" onClick={onEnd} style={{ display: 'flex', alignItems: 'center', height: 40, padding: '0 16px', borderRadius: 8, border: 'none', background: 'var(--accent)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                End conversation
+              </button>
+            )}
+          </div>
+        </header>
+
+        <div style={{ flexGrow: 1, display: 'grid', gridTemplateColumns: 'clamp(280px, 26vw, 360px) minmax(0, 1fr) clamp(340px, 33vw, 460px)', minHeight: 0 }}>
+          <aside aria-label="Matches" style={{ borderRight: '1px solid var(--border-2)', overflowY: 'auto' }}>
+            <LivePanel stage={panelStage} accepted={accepted} onAccept={handleAccept} reportHref={onFinish} />
+          </aside>
+
+          <main style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: '0 32px' }}>
+            <Orb size={280} mode={orbMode} ground="var(--bg)" />
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, textAlign: 'center' }}>
+              <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em' }}>
+                {stage === 'thinking' ? 'Disha is thinking…' : accepted ? 'Your recommendation is ready' : muted ? 'Mic off' : 'Disha is speaking'}
+              </div>
+              <div style={{ fontSize: 14, color: 'var(--muted)' }}>
+                {stage === 'thinking' ? 'Give her a second' : accepted ? 'See your report from the panel on the left' : muted ? 'Unmute to keep talking, or switch to chat' : 'Speak anytime to interrupt'}
+              </div>
+            </div>
+            {!accepted && (
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 20, paddingTop: 8 }}>
+                <button
+                  type="button" aria-pressed={muted} onClick={() => setMuted((v) => !v)}
+                  style={{ width: 64, height: 64, borderRadius: '50%', border: muted ? '1px dashed var(--divider)' : '1px solid #5A2019', background: muted ? 'var(--card-2)' : 'var(--accent-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: muted ? 'var(--muted)' : 'var(--accent-light)', cursor: 'pointer' }}
+                >
+                  {muted ? (
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3l18 18"></path><path d="M9 9v2a3 3 0 0 0 5 2.2"></path><path d="M15 9.3V6a3 3 0 0 0-5.7-1.3"></path><path d="M5 11a7 7 0 0 0 11.5 5.3"></path><path d="M19 11a7 7 0 0 1-.6 2.8"></path><path d="M12 18v3"></path></svg>
+                  ) : (
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg>
+                  )}
+                </button>
+                <button
+                  type="button" aria-label="End conversation" onClick={onEnd}
+                  style={{ width: 64, height: 64, borderRadius: '50%', border: 'none', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', cursor: 'pointer' }}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg>
+                </button>
+              </div>
+            )}
+            {!accepted && <p style={{ margin: 0, fontSize: 13, color: 'var(--dim)' }}>Just talk. Prefer typing? Switch to Chat on the right.</p>}
+          </main>
+
+          <section aria-label="Conversation" style={{ display: 'flex', flexDirection: 'column', minHeight: 0, borderLeft: '1px solid var(--border-2)', background: 'var(--surface)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '12px 20px', borderBottom: '1px solid var(--border-2)' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <span style={{ fontSize: 16, fontWeight: 800 }}>Conversation</span>
+                <span style={{ fontSize: 12, color: 'var(--muted)' }}>What you and Disha say, word for word</span>
+              </div>
+              <div role="group" aria-label="Talk or type" style={{ flexShrink: 0, display: 'flex', gap: 2, padding: 3, borderRadius: 999, background: 'var(--card)', border: '1px solid var(--border)' }}>
+                <button type="button" aria-pressed="true" style={{ display: 'flex', alignItems: 'center', gap: 6, height: 36, padding: '0 14px', borderRadius: 999, border: 'none', background: 'var(--text)', color: 'var(--bg)', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg>
+                  <span>Voice</span>
+                </button>
+                <button type="button" aria-pressed="false" disabled title="Not part of this prototype" style={{ display: 'flex', alignItems: 'center', gap: 6, height: 36, padding: '0 14px', borderRadius: 999, border: 'none', background: 'transparent', color: 'var(--dim)', fontSize: 13, fontWeight: 700, opacity: 0.6, cursor: 'not-allowed' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"></path></svg>
+                  <span>Chat</span>
+                </button>
+              </div>
+            </div>
+
+            <div style={{ maskImage: 'linear-gradient(to bottom, transparent 0, #000 40px)', flexGrow: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 14, padding: '16px 20px' }}>
+              {messages.map((m) => <MessageRow key={m.id} m={m} />)}
+              {typing && (
+                <div role="status" aria-label="Disha is thinking" style={{ alignSelf: 'flex-start', display: 'flex', gap: 5, padding: '12px 14px', borderRadius: '4px 14px 14px 14px', background: 'var(--card-2)' }}>
+                  <span className="dot1" style={{ width: 7, height: 7, borderRadius: '50%', background: '#C7C9CE' }} />
+                  <span className="dot2" style={{ width: 7, height: 7, borderRadius: '50%', background: '#C7C9CE' }} />
+                  <span className="dot3" style={{ width: 7, height: 7, borderRadius: '50%', background: '#C7C9CE' }} />
+                </div>
+              )}
+              {chips.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {chips.map((c) => (
+                    <button
+                      key={c} type="button"
+                      onClick={() => (stage === 'opening' ? handleOpeningChip(c) : handleHoursChip(c))}
+                      style={{ minHeight: 36, padding: '6px 12px', borderRadius: 999, border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--text)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <div ref={endRef} />
+            </div>
+
+            <div role="status" style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '0 16px 16px', padding: '14px 16px', borderRadius: 14, background: 'var(--card)', border: '1px solid var(--border)', fontSize: 13, color: 'var(--muted)' }}>
+              <span aria-hidden="true" style={{ display: 'flex', alignItems: 'center', gap: 3, height: 18 }}>
+                {[1, 2, 3, 4].map((n) => (
+                  <span key={n} className={listening ? `eq eq${n > 1 ? n : ''}` : ''} style={{ width: 3, height: 18, borderRadius: 2, background: listening ? 'var(--accent-light)' : 'var(--faint)' }} />
+                ))}
+              </span>
+              <span style={{ flexGrow: 1 }}>
+                <strong style={{ color: 'var(--text)' }}>
+                  {stage === 'thinking' ? 'Disha is thinking…' : muted ? 'Mic off' : listening ? 'Listening…' : 'Disha is speaking'}
+                </strong> · Prefer typing? Switch to Chat above.
+              </span>
+            </div>
+          </section>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', flexGrow: 1, background: 'var(--bg)', overflow: 'hidden' }} className="screen-transition">

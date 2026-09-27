@@ -3,10 +3,12 @@ import DetailsScreen from './screens/DetailsScreen.jsx';
 import ConnectingScreen from './screens/ConnectingScreen.jsx';
 import ConversationScreen from './screens/ConversationScreen.jsx';
 import ReportScreen from './screens/ReportScreen.jsx';
+import useIsDesktop from './hooks/useIsDesktop.js';
 
 export default function App() {
   const [screen, setScreen] = useState('details'); // details | connecting | conversation | report
   const [key, setKey] = useState(0);
+  const isDesktop = useIsDesktop();
 
   function restart() {
     setKey((k) => k + 1);
@@ -14,7 +16,7 @@ export default function App() {
   }
 
   return (
-    <div className="app-frame">
+    <div className={`app-frame${isDesktop ? ' is-desktop' : ''}`}>
       {screen === 'details' && (
         <DetailsScreen onStart={() => setScreen('connecting')} />
       )}

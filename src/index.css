@@ -65,6 +65,12 @@ a:hover { color: var(--accent-lighter); }
   overflow-x: hidden;
 }
 
+@media (min-width: 1024px) {
+  .app-frame.is-desktop {
+    max-width: 1440px;
+  }
+}
+
 @keyframes blink { 0%, 80%, 100% { opacity: .25 } 40% { opacity: 1 } }
 .dot1 { animation: blink 1.2s infinite; }
 .dot2 { animation: blink 1.2s .2s infinite; }
