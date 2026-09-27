@@ -129,7 +129,7 @@ export default function ConversationScreen({ onEnd, onFinish }) {
   const revealOverlay = (stage === 'revealed' || stage === 'recommended') && !chatOpen;
   const accepted = stage === 'recommended';
   const orbMode = typing ? 'connecting' : stage === 'thinking' ? 'connecting' : chips.length || stage === 'opening' ? 'speaking' : 'listening';
-  const topMatch = PANEL_STAGES.exploring.matches[0];
+  const topMatch = PANEL_STAGES[panelStage]?.matches?.[0];
   const isDesktop = useIsDesktop();
 
   if (isDesktop) {
@@ -323,7 +323,7 @@ export default function ConversationScreen({ onEnd, onFinish }) {
 
       {!revealOverlay && (
         <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 10, padding: '0 0 24px', borderRadius: '20px 20px 0 0', background: 'var(--surface)', borderTop: '1px solid var(--border-2)', boxShadow: '0 -16px 32px -16px rgba(0,0,0,0.8)' }}>
-          {stage === 'opening' ? (
+          {panelStage === 'start' ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '8px 16px 0' }}>
               <span style={{ alignSelf: 'center', width: 36, height: 4, borderRadius: 2, background: 'var(--divider)' }} />
               <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
