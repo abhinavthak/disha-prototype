@@ -26,6 +26,7 @@ export const PICKS = {
 // kind: d = Disha, u = user, x = live-match update toast
 export const OPENING_LINE = {
   kind: 'd',
+  id: 'opening',
   text: "Hi Priya, I'm Disha, YourDegree's AI counsellor. Just talk, like you would on a call. What's brought you here today?",
 };
 
@@ -33,10 +34,10 @@ export const OPENING_CHIPS = ['Switch fields', 'Grow in my role', 'Just finished
 
 export const EXPLORE_SCRIPT = [
   { kind: 'u', text: "I've been in QA for four years and I feel stuck. Same test cases every sprint." },
-  { kind: 'd', text: 'Four years of the same test cases. That would wear anyone down. What part of the work still feels good?' },
+  { kind: 'd', id: 'explore-1', text: 'Four years of the same test cases. That would wear anyone down. What part of the work still feels good?' },
   { kind: 'u', text: 'When something fails and I get to dig in and find out why.' },
   { kind: 'x', text: 'Matches updated · MBA moved to #1' },
-  { kind: 'd', text: 'That detective instinct is what data roles run on. Roughly how many hours a week could you give to studying?' },
+  { kind: 'd', id: 'explore-2', text: 'That detective instinct is what data roles run on. Roughly how many hours a week could you give to studying?' },
 ];
 
 export const HOURS_CHIPS = ['Under 5 hrs', '5–10', '10–15', '15+'];
@@ -46,14 +47,16 @@ export const AFTER_HOURS = { kind: 'u', text: 'Maybe eight hours, mostly on week
 export const REVEAL_LINES = [
   {
     kind: 'd',
+    id: 'reveal-1',
     text: "Priya, here's what I'd suggest: the Online MBA in Business Analytics. It builds on your four years instead of starting over, and turns the part you enjoy, finding out why things break, into the job.",
   },
   { kind: 'rec' },
-  { kind: 'd', text: 'The honest trade-off: some weeks will ask for more than your eight hours. How does that sit with you?' },
+  { kind: 'd', id: 'reveal-2', text: 'The honest trade-off: some weeks will ask for more than your eight hours. How does that sit with you?' },
 ];
 
 export const AFTER_ACCEPT = {
   kind: 'd',
+  id: 'after-accept',
   text: 'Good. Your report has everything we discussed, including the trade-off, so you can come back to it or share it with anyone deciding with you.',
 };
 

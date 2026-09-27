@@ -5,6 +5,7 @@ import {
   OPENING_LINE, OPENING_CHIPS, EXPLORE_SCRIPT, HOURS_CHIPS, AFTER_HOURS,
   REVEAL_LINES, AFTER_ACCEPT, USER_ACCEPT_LINE, PANEL_STAGES, PICKS,
 } from '../data/script.js';
+import { AUDIO } from '../data/audio.js';
 
 let uid = 0;
 const nextId = () => `m${uid++}`;
@@ -27,10 +28,32 @@ export default function ConversationScreen({ onEnd, onFinish }) {
   const [elapsed, setElapsed] = useState(0);
   const timers = useRef([]);
   const endRef = useRef(null);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     const iv = setInterval(() => setElapsed((e) => e + 1), 1000);
     return () => clearInterval(iv);
+  }, []);
+
+  useEffect(() => {
+    audioRef.current = new Audio();
+    return () => audioRef.current?.pause();
+  }, []);
+
+  // Plays Disha's pre-generated line (Sarvam TTS, voice "ritu") for a script id.
+  function speak(id) {
+    const src = id && AUDIO[id];
+    const el = audioRef.current;
+    if (!src || !el) return;
+    el.pause();
+    el.src = src;
+    el.currentTime = 0;
+    el.play().catch(() => {});
+  }
+
+  useEffect(() => {
+    speak(OPENING_LINE.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -48,6 +71,9 @@ export default function ConversationScreen({ onEnd, onFinish }) {
     setMessages((m) => [...m, { id: nextId(), kind, text }]);
   }
 
+  const TYPE_DELAY = 900; // typing-dots duration before a spoken line lands
+  const PAUSE_AFTER = 500; // breathing room after a line finishes speaking
+
   function handleOpeningChip(label) {
     pushMessage('u', label);
     setChips([]);
@@ -56,8 +82,9 @@ export default function ConversationScreen({ onEnd, onFinish }) {
     EXPLORE_SCRIPT.forEach((item) => {
       if (item.kind === 'd') {
         after(t, () => setTyping(true));
-        after(t + 900, () => { setTyping(false); pushMessage('d', item.text); });
-        t += 1900;
+        const speakAt = t + TYPE_DELAY;
+        after(speakAt, () => { setTyping(false); pushMessage('d', item.text); speak(item.id); });
+        t = speakAt + (AUDIO[item.id]?.ms ?? 1500) + PAUSE_AFTER;
       } else if (item.kind === 'u') {
         after(t, () => pushMessage('u', item.text));
         t += 1100;
@@ -78,18 +105,20 @@ export default function ConversationScreen({ onEnd, onFinish }) {
       setTyping(false);
       setStage('revealed');
       setPanelStage('revealed');
-      REVEAL_LINES.forEach((line, i) => {
-        after(i * 500, () => {
+      let t = 0;
+      REVEAL_LINES.forEach((line) => {
+        after(t, () => {
           if (line.kind === 'rec') pushMessage('rec', PICKS.mba.name);
-          else pushMessage('d', line.text);
+          else { pushMessage('d', line.text); speak(line.id); }
         });
+        t += line.kind === 'rec' ? 400 : (AUDIO[line.id]?.ms ?? 1500) + PAUSE_AFTER;
       });
     });
   }
 
   function handleAccept() {
     pushMessage('u', USER_ACCEPT_LINE.text);
-    after(500, () => pushMessage('d', AFTER_ACCEPT.text));
+    after(500, () => { pushMessage('d', AFTER_ACCEPT.text); speak(AFTER_ACCEPT.id); });
     setStage('recommended');
     setPanelStage('recommended');
     setChatOpen(false);
