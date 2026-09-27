@@ -39,10 +39,11 @@ html, body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+  overscroll-behavior-y: none;
 }
 
 #root {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   justify-content: center;
 }
@@ -58,7 +59,7 @@ a:hover { color: var(--accent-lighter); }
   position: relative;
   width: 100%;
   max-width: 430px;
-  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg);
   display: flex;
   flex-direction: column;
