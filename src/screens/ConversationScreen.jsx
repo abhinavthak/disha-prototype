@@ -3,7 +3,7 @@ import Orb from '../components/Orb.jsx';
 import LivePanel from '../components/LivePanel.jsx';
 import {
   OPENING_LINE, OPENING_CHIPS, EXPLORE_SCRIPT, HOURS_CHIPS, AFTER_HOURS,
-  REVEAL_LINES, AFTER_ACCEPT, USER_ACCEPT_LINE, PANEL_STAGES, PICKS,
+  REVEAL_LINES, AFTER_ACCEPT, USER_ACCEPT_LINE, PANEL_STAGES, PICKS, PROGRAMME_DETAILS,
 } from '../data/script.js';
 import { AUDIO } from '../data/audio.js';
 import useIsDesktop from '../hooks/useIsDesktop.js';
@@ -431,7 +431,7 @@ function MessageRow({ m }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: 14, borderRadius: 14, background: '#141418', border: '1.5px solid var(--accent)' }}>
         <span style={{ alignSelf: 'flex-start', color: 'var(--accent-light)', fontSize: 11, fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Disha's pick</span>
         <span style={{ fontSize: 16, fontWeight: 800, lineHeight: 1.3 }}>{m.text}</span>
-        <span style={{ fontSize: 12, color: 'var(--muted)' }}>[University name] · [₹ fee] · [months]</span>
+        <span style={{ fontSize: 12, color: 'var(--muted)' }}>{PROGRAMME_DETAILS[m.text]?.uni} · {PROGRAMME_DETAILS[m.text]?.fee} · {PROGRAMME_DETAILS[m.text]?.duration}</span>
       </div>
     );
   }
@@ -484,10 +484,10 @@ function RevealPanel({ stage, accepted, onMinimize, onAccept, onFinish }) {
           <span style={{ alignSelf: 'flex-start', color: 'var(--accent-light)', fontSize: 12, fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{pick.badge}</span>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             <h2 style={{ margin: 0, fontSize: 23, fontWeight: 800, lineHeight: 1.18, letterSpacing: '-0.02em', color: 'var(--text-strong)' }}>{pick.name}</h2>
-            <span style={{ fontSize: 13, color: 'var(--muted)' }}>[University name]</span>
+            <span style={{ fontSize: 13, color: 'var(--muted)' }}>{pick.uni}</span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 6 }}>
-            {[['Fee', '[₹ fee]'], ['Duration', '[months]'], ['Weekly', '[hrs]']].map(([k, v]) => (
+            {[['Fee', pick.fee], ['Duration', pick.duration], ['Weekly', pick.effort]].map(([k, v]) => (
               <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 10, borderRadius: 10, background: 'var(--card-2)' }}>
                 <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--muted)' }}>{k}</span>
                 <span style={{ fontSize: 14, fontWeight: 800 }}>{v}</span>
@@ -520,7 +520,7 @@ function RevealPanel({ stage, accepted, onMinimize, onAccept, onFinish }) {
               <span style={{ flexShrink: 0, width: 24, height: 24, borderRadius: '50%', background: 'var(--card-2)', color: 'var(--text)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800 }}>{i + 2}</span>
               <div style={{ flexGrow: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <span style={{ fontSize: 14, fontWeight: 800, lineHeight: 1.3 }}>{o.name}</span>
-                <span style={{ fontSize: 12, color: 'var(--muted)' }}>[University name] · [₹ fee] · [months]</span>
+                <span style={{ fontSize: 12, color: 'var(--muted)' }}>{PROGRAMME_DETAILS[o.name]?.uni} · {PROGRAMME_DETAILS[o.name]?.fee} · {PROGRAMME_DETAILS[o.name]?.duration}</span>
                 <span style={{ fontSize: 13, lineHeight: 1.45, color: '#C7C9CE' }}>{o.reason}</span>
               </div>
             </div>

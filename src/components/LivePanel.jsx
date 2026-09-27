@@ -1,4 +1,4 @@
-import { PANEL_STAGES, PICKS } from '../data/script.js';
+import { PANEL_STAGES, PICKS, PROGRAMME_DETAILS } from '../data/script.js';
 
 const badgeColor = (kind) => (kind === 'new' ? 'var(--accent-light)' : kind === 'down' ? 'var(--muted)' : 'var(--good)');
 
@@ -25,10 +25,10 @@ export default function LivePanel({ stage = 'exploring', accepted, onAccept, onA
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent-light)' }}>{pick.badge}</span>
             <h3 style={{ margin: 0, fontSize: 20, fontWeight: 800, lineHeight: 1.2, letterSpacing: '-0.02em' }}>{pick.name}</h3>
-            <span style={{ fontSize: 12, color: 'var(--muted)' }}>[University name]</span>
+            <span style={{ fontSize: 12, color: 'var(--muted)' }}>{pick.uni}</span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 6 }}>
-            {[['Fee', '[₹ fee]'], ['Duration', '[months]'], ['Weekly', '[hrs]']].map(([k, v]) => (
+            {[['Fee', pick.fee], ['Duration', pick.duration], ['Weekly', pick.effort]].map(([k, v]) => (
               <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 2, padding: '8px 10px', borderRadius: 10, background: 'var(--tile)' }}>
                 <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--muted)' }}>{k}</span>
                 <span style={{ fontSize: 13, fontWeight: 800 }}>{v}</span>
@@ -93,7 +93,7 @@ export default function LivePanel({ stage = 'exploring', accepted, onAccept, onA
                 <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <span style={{ fontSize: 15, fontWeight: 800, lineHeight: 1.3 }}>{p.name}</span>
                   <span style={{ fontSize: 12, color: 'var(--muted)' }}>
-                    [University name]{p.badge && <> · <span style={{ fontWeight: 800, color: badgeColor(p.kind) }}>{p.badge}</span></>}
+                    {PROGRAMME_DETAILS[p.name]?.uni}{p.badge && <> · <span style={{ fontWeight: 800, color: badgeColor(p.kind) }}>{p.badge}</span></>}
                   </span>
                 </div>
               </div>

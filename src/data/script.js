@@ -1,6 +1,7 @@
 // Content extracted from the "Disha counsellor" design mockups (Voice.dc.html,
-// LivePanel.dc.html, Recommendation.dc.html). Names in [Brackets] were placeholders
-// in the source design and are kept as-is.
+// LivePanel.dc.html, Recommendation.dc.html). Fictional university names, fees
+// and durations fill in what were originally [bracketed] design placeholders —
+// plausible sample data for a prototype, not real institutions or pricing.
 
 export const NAMES = {
   MBA: 'Online MBA · Business Analytics',
@@ -10,10 +11,19 @@ export const NAMES = {
   ML: 'Executive PG in Machine Learning & AI',
 };
 
+export const PROGRAMME_DETAILS = {
+  [NAMES.MBA]: { uni: 'Ridgefield Global University', fee: '₹2,80,000', duration: '24 months', effort: '10–12 hrs/wk' },
+  [NAMES.DS]: { uni: 'Meridian Institute of Technology', fee: '₹1,45,000', duration: '11 months', effort: '8–10 hrs/wk' },
+  [NAMES.MSC]: { uni: 'Northbridge University', fee: '₹3,20,000', duration: '24 months', effort: '12 hrs/wk' },
+  [NAMES.PM]: { uni: 'Elevate School of Management', fee: '₹95,000', duration: '6 months', effort: '6 hrs/wk' },
+  [NAMES.ML]: { uni: 'Vantage Institute of AI', fee: '₹2,10,000', duration: '12 months', effort: '10 hrs/wk' },
+};
+
 export const PICKS = {
   mba: {
     badge: 'Best fit for you',
     name: NAMES.MBA,
+    ...PROGRAMME_DETAILS[NAMES.MBA],
     trade: 'some weeks will ask for more than your 8 hours.',
     reasons: [
       'You said the best part of testing is finding out why something broke. Analytics is that, at business scale.',
@@ -78,7 +88,7 @@ export const PANEL_STAGES = {
     matches: [
       { name: NAMES.MBA, badge: '↑ Moved up', kind: 'up', reason: 'Because you said the fun part is finding out why something broke.' },
       { name: NAMES.DS, badge: 'New', kind: 'new', reason: 'Because you want to move closer to data work.' },
-      { name: NAMES.PM, badge: '', kind: '', reason: '[Reason tied to what Priya said]' },
+      { name: NAMES.PM, badge: '', kind: '', reason: 'Because you like owning a problem end-to-end, not just testing it.' },
     ],
     footer: 'Matches sharpen once Disha knows your weekly time and budget.',
   },
@@ -91,8 +101,8 @@ export const PANEL_STAGES = {
     matches: [
       { name: NAMES.DS, reason: 'Deeper on data, if you want to go specialist rather than broad.' },
       { name: NAMES.MSC, reason: "A full master's, if having the degree matters for your next move." },
-      { name: NAMES.PM, reason: '[Reason tied to what Priya said]' },
-      { name: NAMES.ML, reason: '[Reason tied to what Priya said]' },
+      { name: NAMES.PM, reason: "If you'd rather shape the roadmap than dig into the data yourself." },
+      { name: NAMES.ML, reason: 'For going more technical — building the models instead of interpreting them.' },
     ],
     footer: 'Your report has the full reasoning for all five.',
   },
@@ -106,8 +116,8 @@ export const PANEL_STAGES = {
     matches: [
       { name: NAMES.DS, reason: 'Deeper on data, if you want to go specialist rather than broad.' },
       { name: NAMES.MSC, reason: "A full master's, if having the degree matters for your next move." },
-      { name: NAMES.PM, reason: '[Reason tied to what Priya said]' },
-      { name: NAMES.ML, reason: '[Reason tied to what Priya said]' },
+      { name: NAMES.PM, reason: "If you'd rather shape the roadmap than dig into the data yourself." },
+      { name: NAMES.ML, reason: 'For going more technical — building the models instead of interpreting them.' },
     ],
     footer: 'Your report has the full reasoning for all five.',
   },
@@ -121,48 +131,33 @@ export const REPORT = {
   programmes: [
     {
       name: NAMES.MBA,
-      uni: '[University name]',
-      fee: '[₹ fee]',
-      duration: '[months]',
-      effort: '[hrs]',
+      ...PROGRAMME_DETAILS[NAMES.MBA],
       reasons: [
         'You said the best part of testing is finding out why something broke. Analytics is that, at business scale.',
         'Builds on your 4 years in IT services instead of starting over.',
-        '[How the format fits your 8 hours a week]',
+        'The weekend-heavy format fits your 8 hours a week better than a weekday-only course would.',
       ],
-      tradeoff: '[Weekly effort against your 8 hours, or fee against your budget]',
+      tradeoff: 'Some weeks, especially around exams, will ask for more than your usual 8 hours.',
     },
     {
       name: NAMES.DS,
-      uni: '[University name]',
-      fee: '[₹ fee]',
-      duration: '[months]',
-      effort: '[hrs]',
-      reasons: ['Goes deeper on the data work you said you enjoy.', '[Why it suits someone moving out of manual testing]'],
+      ...PROGRAMME_DETAILS[NAMES.DS],
+      reasons: ['Goes deeper on the data work you said you enjoy.', 'QA-to-data-science is one of the most common moves we see — your root-cause habit transfers directly.'],
     },
     {
       name: NAMES.MSC,
-      uni: '[University name]',
-      fee: '[₹ fee]',
-      duration: '[months]',
-      effort: '[hrs]',
-      reasons: ["A full master's, if having the degree matters for your next move.", '[Fit against your budget]'],
+      ...PROGRAMME_DETAILS[NAMES.MSC],
+      reasons: ["A full master's, if having the degree matters for your next move.", "It costs more than the MBA, so it's worth it mainly if the master's title itself matters for where you go next."],
     },
     {
       name: NAMES.PM,
-      uni: '[University name]',
-      fee: '[₹ fee]',
-      duration: '[months]',
-      effort: '[hrs]',
-      reasons: ['Matches the "building a system that runs smoothly" side you picked.', '[Time commitment against your 8 hours]'],
+      ...PROGRAMME_DETAILS[NAMES.PM],
+      reasons: ['Matches the "building a system that runs smoothly" side you picked.', "At 6 hours a week it's the lightest option here — easiest to finish alongside a full-time job."],
     },
     {
       name: NAMES.ML,
-      uni: '[University name]',
-      fee: '[₹ fee]',
-      duration: '[months]',
-      effort: '[hrs]',
-      reasons: ['[Why it fits, tied to what Priya said]', '[Time commitment against your 8 hours]'],
+      ...PROGRAMME_DETAILS[NAMES.ML],
+      reasons: ['Goes further technical than the MBA — worth it if you want to build the models, not just read their output.', 'Closer to your 8 hours a week than the MSc, but some weeks will still run over.'],
     },
   ],
   profile: [
@@ -171,9 +166,9 @@ export const REPORT = {
     { label: 'Experience', value: '4 years, IT services' },
     { label: 'Qualification', value: 'Graduate' },
     { label: 'Time', value: '8 hrs a week' },
-    { label: 'Budget', value: '[₹ budget]' },
+    { label: 'Budget', value: '₹2,50,000' },
   ],
-  goal: '"[Career goal as Priya said it]"',
+  goal: '"Move into a proper data role without starting my career over"',
   worry: "“I'll start and not finish. I've done that with online courses before.”",
   workStyle: 'Digging into data to solve a tricky problem',
   transcript: [

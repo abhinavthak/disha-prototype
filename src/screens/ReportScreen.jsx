@@ -160,7 +160,7 @@ export default function ReportScreen({ onRestart }) {
                       <h3 style={{ margin: 0, fontSize: 17, fontWeight: 800, lineHeight: 1.3 }}>{p.name}</h3>
                       <div style={{ fontSize: 13, color: 'var(--report-muted)' }}>{p.uni}</div>
                     </div>
-                    <div style={{ fontSize: 13, fontWeight: 700 }}>{p.fee} · {p.duration} · {p.effort}/wk</div>
+                    <div style={{ fontSize: 13, fontWeight: 700 }}>{p.fee} · {p.duration} · {p.effort}</div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, borderTop: '1px solid #EFEFF1', paddingTop: 12 }}>
                       {p.reasons.slice(0, 2).map((r) => (
                         <div key={r} style={{ display: 'flex', gap: 8, fontSize: 13, lineHeight: 1.45 }}>
@@ -356,7 +356,7 @@ export default function ReportScreen({ onRestart }) {
                   <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, lineHeight: 1.3 }}>{p.name}</h3>
                   <div style={{ fontSize: 12, color: 'var(--report-muted)' }}>{p.uni}</div>
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 700 }}>{p.fee} · {p.duration} · {p.effort}/wk</div>
+                <div style={{ fontSize: 13, fontWeight: 700 }}>{p.fee} · {p.duration} · {p.effort}</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6, borderTop: '1px solid #EFEFF1', paddingTop: 10 }}>
                   {p.reasons.slice(0, 2).map((r) => (
                     <div key={r} style={{ display: 'flex', gap: 8, fontSize: 13, lineHeight: 1.45 }}>
