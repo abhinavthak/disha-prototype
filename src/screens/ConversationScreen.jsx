@@ -135,7 +135,7 @@ export default function ConversationScreen({ onEnd, onFinish }) {
   if (isDesktop) {
     const listening = !muted && stage !== 'thinking' && stage !== 'opening' && chips.length === 0;
     return (
-      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', flexGrow: 1, background: 'var(--bg)', overflow: 'hidden' }} className="screen-transition">
+      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', height: '100dvh', background: 'var(--bg)', overflow: 'hidden' }} className="screen-transition">
         <header style={{ height: 68, boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', borderBottom: '1px solid var(--border-2)' }}>
           <div style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text-strong)' }}>YourDegree</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -251,7 +251,7 @@ export default function ConversationScreen({ onEnd, onFinish }) {
   }
 
   return (
-    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', flexGrow: 1, background: 'var(--bg)', overflow: 'hidden' }} className="screen-transition">
+    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', height: '100dvh', background: 'var(--bg)', overflow: 'hidden' }} className="screen-transition">
       <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
         <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text-strong)' }}>YourDegree</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
