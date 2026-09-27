@@ -48,7 +48,7 @@ export default function ConversationScreen({ onEnd, onFinish }) {
     const el = audioRef.current;
     if (!src || !el) return;
     el.pause();
-    el.src = src;
+    el.src = import.meta.env.BASE_URL + src;
     el.currentTime = 0;
     el.play().catch(() => {});
   }

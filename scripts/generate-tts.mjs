@@ -106,7 +106,7 @@ for (const line of lines) {
 
   const buf = readFileSync(filePath);
   const ms = wavDurationMs(buf) ?? 1500;
-  manifest[line.id] = { url: `/audio/${fileName}`, ms };
+  manifest[line.id] = { url: `audio/${fileName}`, ms };
   console.log(`  -> public/audio/${fileName} (${buf.length} bytes, ${ms}ms)`);
 }
 
